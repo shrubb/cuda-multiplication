@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <assert.h>
 
 struct Matrix {
     int width;
@@ -31,7 +32,7 @@ __device__ Matrix getSubMatrix(Matrix A, int row, int col) {
     return Asub;
 }
 
-__global__ void MatMulKernel(Matrix A, Matrix B, Matrix C) {
+__global__ void ProductKernel(Matrix A, Matrix B, Matrix C) {
 
     // row/col inside grid
     int blockRow = blockIdx.y;
@@ -72,7 +73,9 @@ __global__ void MatMulKernel(Matrix A, Matrix B, Matrix C) {
     }
 }
 
-__host__ void MatMul(const Matrix A, const Matrix B, Matrix C) {
+__host__ void Product(const Matrix A, const Matrix B, Matrix C) {
+    assert(A.width == B.height and C.height == A.height and C.width == B.width);
+
     Matrix d_A;
     d_A.width = d_A.stride = A.width; d_A.height = A.height;
     size_t size = A.width * A.height * sizeof(float);
@@ -92,7 +95,7 @@ __host__ void MatMul(const Matrix A, const Matrix B, Matrix C) {
 
     dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
     dim3 dimGrid((B.width + dimBlock.x - 1) / dimBlock.x, (A.height + dimBlock.y - 1) / dimBlock.y);
-    MatMulKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
+    ProductKernel <<<dimGrid, dimBlock>>> (d_A, d_B, d_C);
 
     cudaMemcpy(C.elements, d_C.elements, size, cudaMemcpyDeviceToHost);
 
@@ -127,7 +130,7 @@ int main() {
     Matrix Bm; Bm.elements = B[0]; Bm.height = M; Bm.stride = Bm.width = N;
     Matrix Dm; Dm.elements = D[0]; Dm.height = N; Dm.stride = Dm.width = N;
 
-    MatMul(Am, Bm, Dm);
+    Product(Am, Bm, Dm);
 
     const float EPS = 0.00001;
 

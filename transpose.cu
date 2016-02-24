@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <assert.h>
 
 struct Matrix {
     int width;
@@ -10,7 +11,15 @@ struct Matrix {
 
 #define BLOCK_SIZE 16
 
+__host__ void Transpose(const Matrix A, Matrix B) {
+    assert(A.width == B.height and A.height == B.width);
 
+    
+}
+
+__global__ void transposeKernel(Matrix A, Matrix B) {
+
+}
 
 int main() {
     // Код для проверки

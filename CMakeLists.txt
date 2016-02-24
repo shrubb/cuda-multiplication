@@ -21,7 +21,7 @@ include_directories(
 # Specify target & source files to compile it from
 cuda_add_executable(
         main
-        main.cu
+        transpose.cu
 )
 
 # For linking ...
