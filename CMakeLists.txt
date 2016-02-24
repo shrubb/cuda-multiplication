@@ -5,11 +5,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(CUDA REQUIRED)
 
 # Pass options to NVCC
-#set(
-#        CUDA_NVCC_FLAGS
-#        ${CUDA_NVCC_FLAGS};
-#        -gencode arch=compute_22,code=sm_22
-#)
+set(
+        CUDA_NVCC_FLAGS
+        ${CUDA_NVCC_FLAGS};
+        -arch sm_20
+)
 
 # Specify include directories
 include_directories(

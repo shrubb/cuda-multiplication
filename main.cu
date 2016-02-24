@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 using namespace std;
 
 struct Matrix {
@@ -122,7 +123,8 @@ __global__ void MatMulKernel(Matrix A, Matrix B, Matrix C) {
 
     // Write Csub to device memory
     // Each thread writes one element
-    setElement(Csub, row, col, col);
+    if (row == 1 and col == 1) printf("%d %d: %f\n", row, col, Cvalue);
+    setElement(Csub, row, col, Cvalue);
     //if (row == 1 and col == 1) setElement(Csub, 1, 1, Csub.stride);
 }
 
